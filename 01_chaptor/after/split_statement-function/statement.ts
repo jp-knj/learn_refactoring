@@ -12,6 +12,28 @@ function statement (invoice:any, plays:any) {
         return plays[aPerformance.playID];
     }
 
+    function amountFor(aPerformance: any) {
+        let result = 0;
+        switch (playFor(aPerformance).type) {
+            case "tragedy":
+                result = 40000;
+                if (playFor(aPerformance).audience > 30) {
+                    result += 1000 * (aPerformance.audience - 30);
+                }
+                break;
+            case "comedy":
+                result = 30000;
+                if (aPerformance.audience > 20) {
+                    result += 10000 + 500 * (aPerformance.audience - 20);
+                }
+                result += 300 * aPerformance.audience;
+                break;
+            default:
+                throw new Error(`unknown type: ${ playFor(aPerformance).type }`);
+        }
+        return result;
+    }
+
     function volumeCreditsFor(aPerformance: any){
         let result = 0;
         result += Math.max(aPerformance.audience - 30, 0);
@@ -30,27 +52,6 @@ function statement (invoice:any, plays:any) {
     for (let perf of invoice.performances) {
         volumeCredits += volumeCreditsFor(perf);
 
-        function amountFor(aPerformance: any) {
-            let result = 0;
-            switch (playFor(perf).type) {
-                case "tragedy":
-                    result = 40000;
-                    if (playFor(aPerformance).audience > 30) {
-                        result += 1000 * (aPerformance.audience - 30);
-                    }
-                    break;
-                case "comedy":
-                    result = 30000;
-                    if (aPerformance.audience > 20) {
-                        result += 10000 + 500 * (aPerformance.audience - 20);
-                    }
-                    result += 300 * aPerformance.audience;
-                    break;
-                default:
-                    throw new Error(`unknown type: ${ playFor(aPerformance).type }`);
-            }
-            return result;
-        }
 
         //注文の内訳を出力
         result += ` ${ playFor(perf).name }: ${ usd(amountFor(perf)/100) } (${ perf.audience } seats)\n`;
