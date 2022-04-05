@@ -24,10 +24,10 @@ function statement (invoice:any, plays:any) {
         let thisAmount = amountFor(perf, playFor(perf));
         function amountFor(aPerformance: any, play: any) {
             let result = 0;
-            switch (play.type) {
+            switch (playFor(perf).type) {
                 case "tragedy":
                     result = 40000;
-                    if (aPerformance.audience > 30) {
+                    if (playFor(aPerformance).audience > 30) {
                         result += 1000 * (aPerformance.audience - 30);
                     }
                     break;
@@ -39,7 +39,7 @@ function statement (invoice:any, plays:any) {
                     result += 300 * aPerformance.audience;
                     break;
                 default:
-                    throw new Error(`unknown type: ${ play.type }`);
+                    throw new Error(`unknown type: ${ playFor(aPerformance).type }`);
             }
             return result;
         }
