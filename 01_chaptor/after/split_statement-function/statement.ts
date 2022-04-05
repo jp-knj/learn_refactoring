@@ -20,9 +20,8 @@ function statement (invoice:any, plays:any) {
 
 
     for (let perf of invoice.performances) {
-        // const play = playFor(perf)
-        let thisAmount = amountFor(perf, playFor(perf));
-        function amountFor(aPerformance: any, play: any) {
+        let thisAmount = amountFor(perf);
+        function amountFor(aPerformance: any) {
             let result = 0;
             switch (playFor(perf).type) {
                 case "tragedy":
