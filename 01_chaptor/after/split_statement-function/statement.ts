@@ -5,7 +5,6 @@ console.log(statement(invoice[0], plays));
 
 function statement (invoice:any, plays:any) {
     let totalAmount = 0;
-    let volumeCredits = 0;
     let result = `Statement for ${ invoice.customer }\n`;
 
     function playFor(aPerformance: any) {
@@ -49,15 +48,21 @@ function statement (invoice:any, plays:any) {
             }).format(aNumber/100);
     }
 
+    function totalValueCredits() {
+        let volumeCredits = 0;
+        for (let perf of invoice.performances) {
+            volumeCredits += volumeCreditsFor(perf);
+        }
+        return volumeCredits
+    }
+
     for (let perf of invoice.performances) {
-        volumeCredits += volumeCreditsFor(perf);
-
-
         //注文の内訳を出力
         result += ` ${ playFor(perf).name }: ${ usd(amountFor(perf)/100) } (${ perf.audience } seats)\n`;
         totalAmount += amountFor(perf);
     }
-    result += `Amount owed is ${usd(totalAmount/100) }\n`;
-    result += `You earned ${ volumeCredits } credits\n`;
+
+    result += `Amount owed is ${usd(totalAmount) }\n`;
+    result += `You earned ${totalValueCredits()} credits\n`;
     return result;
 }
