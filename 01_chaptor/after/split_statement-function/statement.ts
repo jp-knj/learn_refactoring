@@ -12,15 +12,24 @@ function statement (invoice:any, plays:any) {
         return plays[aPerformance.playID];
     }
 
-    const format = new Intl.NumberFormat("en-US",
-        {
-            style: "currency", currency: "USD",
-            minimumFractionDigits: 2
-        }).format;
+    function volumeCreditsFor(aPerformance: any){
+        let result = 0;
+        result += Math.max(aPerformance.audience - 30, 0);
+        if ("comedy" === playFor(aPerformance).type) result += Math.floor(aPerformance.audience / 5);
+        return result;
+    }
 
+    function usd(aNumber:any) {
+        return new Intl.NumberFormat("en-US",
+            {
+                style: "currency", currency: "USD",
+                minimumFractionDigits: 2
+            }).format(aNumber/100);
+    }
 
     for (let perf of invoice.performances) {
-        let thisAmount = amountFor(perf);
+        volumeCredits += volumeCreditsFor(perf);
+
         function amountFor(aPerformance: any) {
             let result = 0;
             switch (playFor(perf).type) {
@@ -43,17 +52,11 @@ function statement (invoice:any, plays:any) {
             return result;
         }
 
-        //ボリューム特典のポイントを加算
-        volumeCredits += Math.max(perf.audience - 30, 0);
-
-        //喜劇のときは10人につき、さらにポイントを加算
-        if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
-
         //注文の内訳を出力
-        result += ` ${ playFor(perf).name }: ${ format(amountFor(perf)/100) } (${ perf.audience } seats)\n`;
+        result += ` ${ playFor(perf).name }: ${ usd(amountFor(perf)/100) } (${ perf.audience } seats)\n`;
         totalAmount += amountFor(perf);
     }
-    result += `Amount owed is ${ format(totalAmount/100) }\n`;
+    result += `Amount owed is ${usd(totalAmount/100) }\n`;
     result += `You earned ${ volumeCredits } credits\n`;
     return result;
 }
