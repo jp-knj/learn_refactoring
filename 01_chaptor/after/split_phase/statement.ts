@@ -9,8 +9,13 @@ function statement (invoice:any, plays:any) {
         performance: ''
     };
     statementData.customer = invoice.customer;
-    statementData.performance = invoice.performance;
+    statementData.performance = invoice.performance.map(enrichPerformance);
     return renderPlainText( statementData, plays);
+
+    function enrichPerformance(aPerformance:any) {
+        const result = Object.assign({}, aPerformance);
+        return result;
+    }
 }
 
 function renderPlainText(data:any, plays: any) {
