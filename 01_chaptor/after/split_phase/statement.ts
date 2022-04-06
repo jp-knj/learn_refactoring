@@ -4,6 +4,19 @@ import invoice from '../invoices.json';
 console.log(statement(invoice[0], plays));
 
 function statement (invoice:any, plays:any) {
+    const statementData = {};
+    return renderPlainText( statementData, invoice, plays);
+}
+
+function renderPlainText(data:any, invoice: any, plays: any) {
+    let result = `Statement for ${ invoice.customer }\n`;
+    for (let perf of invoice.performances) {
+        result += ` ${ playFor(perf).name }: ${ usd(amountFor(perf)/100) } (${ perf.audience } seats)\n`;
+    }
+
+    result += `Amount owed is ${usd(totalAmount())}\n`;
+    result += `You earned ${totalValueCredits()} credits\n`;
+    return result;
 
     function playFor(aPerformance: any) {
         return plays[aPerformance.playID];
@@ -61,13 +74,4 @@ function statement (invoice:any, plays:any) {
         }
         return result
     }
-
-    let result = `Statement for ${ invoice.customer }\n`;
-    for (let perf of invoice.performances) {
-        result += ` ${ playFor(perf).name }: ${ usd(amountFor(perf)/100) } (${ perf.audience } seats)\n`;
-    }
-
-    result += `Amount owed is ${usd(totalAmount())}\n`;
-    result += `You earned ${totalValueCredits()} credits\n`;
-    return result;
 }
