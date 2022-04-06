@@ -15,24 +15,9 @@ function statement (invoice:any, plays:any) {
     function enrichPerformance(aPerformance:any) {
         const result = Object.assign({}, aPerformance);
         result.play = playFor(result);
+        result.amount = amountFor(result);
         return result;
     }
-
-    function playFor(aPerformance: any) {
-        return plays[aPerformance.playID];
-    }
-}
-
-function renderPlainText(data:any, plays: any) {
-    let result = `Statement for ${ data.customer }\n`;
-    for (let perf of data.performances) {
-        result += ` ${ perf.play.name }: ${ usd(amountFor(perf)/100) } (${ perf.audience } seats)\n`;
-    }
-
-    result += `Amount owed is ${usd(totalAmount())}\n`;
-    result += `You earned ${totalValueCredits()} credits\n`;
-    return result;
-
 
     function amountFor(aPerformance: any) {
         let result = 0;
@@ -55,6 +40,21 @@ function renderPlainText(data:any, plays: any) {
         }
         return result;
     }
+
+    function playFor(aPerformance: any) {
+        return plays[aPerformance.playID];
+    }
+}
+
+function renderPlainText(data:any, plays: any) {
+    let result = `Statement for ${ data.customer }\n`;
+    for (let perf of data.performances) {
+        result += ` ${ perf.play.name }: ${ usd(perf.audience)} (${ perf.audience } seats)\n`;
+    }
+
+    result += `Amount owed is ${usd(totalAmount())}\n`;
+    result += `You earned ${totalValueCredits()} credits\n`;
+    return result;
 
     function volumeCreditsFor(aPerformance: any){
         let result = 0;
@@ -82,7 +82,7 @@ function renderPlainText(data:any, plays: any) {
     function totalAmount(){
         let result = 0;
         for (let perf of data.performances) {
-            result += amountFor(perf);
+            result += perf.amount;
         }
         return result
     }
