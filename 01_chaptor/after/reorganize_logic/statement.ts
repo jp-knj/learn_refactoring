@@ -2,6 +2,8 @@ import plays from '../plays.json';
 import invoice from '../invoices.json';
 import createStatementData from "./createStatementData";
 
+statement(invoice, plays);
+
 function statement (invoice:any, plays:any) {
     return renderPlainText(createStatementData(invoice,plays));
 }
@@ -17,6 +19,7 @@ function renderPlainText(data:any) {
     return result;
 
 }
+
 function htmlStatement(invoice:any, plays:any) {
     return renderHtml(createStatementData(invoice, plays));
 }
