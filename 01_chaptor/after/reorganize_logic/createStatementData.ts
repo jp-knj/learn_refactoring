@@ -1,3 +1,10 @@
+class PerformanceCalculator {
+    private performance: any;
+    constructor(aPerformance: any) {
+        this.performance = aPerformance
+    }
+}
+
 export default function createStatementData(invoice:any, plays:any) {
     const statementData = {
         customer: '',
@@ -13,6 +20,7 @@ export default function createStatementData(invoice:any, plays:any) {
     return statementData;
 
     function enrichPerformance(aPerformance:any) {
+        const calculator = new PerformanceCalculator(aPerformance);
         const result = Object.assign({}, aPerformance);
         result.play = playFor(result);
         result.amount = amountFor(result);
