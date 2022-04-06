@@ -2,6 +2,10 @@ import plays from '../plays.json';
 import invoice from '../invoices.json';
 
 function statement (invoice:any, plays:any) {
+    return renderPlainText(createStatementData(invoice,plays));
+}
+
+function createStatementData(invoice:any, plays:any) {
     const statementData = {
         customer: '',
         performance: '',
@@ -13,8 +17,7 @@ function statement (invoice:any, plays:any) {
     statementData.performance = invoice.performance.map(enrichPerformance);
     statementData.totalAmount = totalAmount(statementData);
     statementData.totalVolumeCredits = totalValueCredits(statementData);
-
-    return renderPlainText( statementData, plays);
+    return statementData;
 
     function enrichPerformance(aPerformance:any) {
         const result = Object.assign({}, aPerformance);
@@ -66,7 +69,7 @@ function statement (invoice:any, plays:any) {
     }
 }
 
-function renderPlainText(data:any, plays: any) {
+function renderPlainText(data:any) {
     let result = `Statement for ${ data.customer }\n`;
     for (let perf of data.performances) {
         result += ` ${ perf.play.name }: ${ usd(perf.audience)} (${ perf.audience } seats)\n`;
