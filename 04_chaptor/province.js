@@ -1,4 +1,5 @@
 import { Producer } from "./producer";
+
 export class Province {
     constructor(doc) {
         this._name = doc.name;
